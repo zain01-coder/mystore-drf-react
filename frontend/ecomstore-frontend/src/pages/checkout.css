@@ -1,0 +1,248 @@
+@import url("cart.css");
+
+
+.default-address-card {
+    background: var(--color-surface-muted);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+}
+.default-address-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-2);
+}
+.default-address-name {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+}
+.default-address-text,
+.default-address-phone {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+}
+
+.addr-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: var(--radius-pill);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+}
+.addr-badge.badge-default {
+    background: var(--color-success-soft);
+    color: var(--color-success);
+}
+
+
+.billing-note {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.billing-form .form-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 0.5rem;
+}
+
+.billing-form .form-control {
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  min-height: 48px;
+  padding: 0.8rem 0.95rem;
+  box-shadow: none;
+  font-size: 14px;
+  color: var(--text-dark);
+  font-family: 'DM Sans', sans-serif;
+}
+
+.billing-form .form-control:focus {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 0.15rem rgba(37, 99, 235, 0.08);
+}
+
+.billing-form .form-control::placeholder {
+  color: #9ca3af;
+}
+
+.form-control-area {
+  min-height: 112px !important;
+  resize: vertical;
+}
+
+.checkout-actions {
+  padding-top: 0.5rem;
+}
+
+.order-review-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.product-review-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.review-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.review-item:first-child {
+  padding-top: 0;
+}
+
+.review-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.review-item-img {
+  width: 74px;
+  height: 74px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #f3f4f6;
+  flex-shrink: 0;
+}
+
+.review-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+@media (max-width: 575px) {
+  .review-item {
+    gap: 12px;
+  }
+
+  .review-item-img {
+    width: 64px;
+    height: 64px;
+  }
+
+  .billing-note {
+    font-size: 12px;
+  }
+}
+
+/* ============================================================
+   Checkout — shared MyStore visual system
+   ============================================================ */
+.checkout-page {
+  background: var(--color-page);
+}
+
+.checkout-page .card-white {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xs);
+}
+
+.checkout-page .billing-note {
+  color: var(--color-text-secondary);
+}
+
+.checkout-page .billing-form .form-label {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.checkout-page .billing-form .form-control {
+  min-height: 48px;
+  border-color: var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-base);
+}
+
+.checkout-page .billing-form .form-control:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, .11);
+}
+
+.checkout-page .billing-form .form-control::placeholder {
+  color: var(--color-text-muted);
+}
+
+.checkout-page .order-review-title,
+.checkout-page .item-name,
+.checkout-page .item-total {
+  color: var(--color-text-primary);
+}
+
+.checkout-page .order-review-title {
+  font-size: var(--font-size-xl);
+}
+
+.checkout-page .review-item {
+  gap: var(--space-4);
+  border-color: var(--color-border);
+}
+
+.checkout-page .review-item-img {
+  width: 82px;
+  height: 82px;
+  padding: 6px;
+  object-fit: contain;
+  border-color: var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+}
+
+.checkout-page .item-cat {
+  color: var(--color-primary);
+}
+
+.checkout-page .review-item p,
+.checkout-page .review-meta,
+.checkout-page .trust-badge {
+  color: var(--color-text-secondary);
+}
+
+.checkout-page .review-item p {
+  margin: 2px 0;
+  font-size: var(--font-size-xs);
+}
+
+.checkout-page .review-meta span:first-child {
+  min-width: 24px;
+  height: 24px;
+  padding: 0 7px;
+  border-radius: var(--radius-pill);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.checkout-page .alert-danger {
+  border-color: #fecaca;
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+  border-radius: var(--radius-md);
+}
+
+@media (max-width: 575px) {
+  .checkout-page .review-item-img {
+    width: 68px;
+    height: 68px;
+  }
+}

@@ -1,0 +1,28 @@
+GET http://127.0.0.1:8000/store/products HTTP/1.1
+
+
+###
+GET http://127.0.0.1:8000/category/categories HTTP/1.1
+
+###
+GET http://127.0.0.1:8000/store/store-products HTTP/1.1
+
+###
+GET http://127.0.0.1:8000/cart/ HTTP/1.1
+
+
+###
+POST http://127.0.0.1:8000/order/place/ HTTP/1.1
+Content-Type: 'application/json'
+
+{
+    "first_name": "Zain",
+    "last_name": "Mehmood",
+    "email":"zain.mehmood.005@gmail.com",
+    "phone":"03127148872",
+    "city": "Sialkot",
+    "state": "punjab",
+    "country": "Pakistan",
+    "address_line_1":"Toheedabad"
+}
+

@@ -1,0 +1,216 @@
+/* ============================================================
+   Toast — presentational only.
+   Positioning + appearance. No state, no timers.
+
+   NOTE: classes are prefixed `app-` because Bootstrap (loaded from the
+   CDN in index.html) owns `.toast` and `.toast-body`. Its rule
+   `.toast:not(.show){display:none}` is more specific than a bare
+   `.toast`, so an unprefixed name is hidden no matter the load order.
+   ============================================================ */
+
+/* ---------- Stack container ---------- */
+
+.app-toast-stack {
+  position: fixed;
+  top: 90px;                 /* clears the sticky navbar */
+  right: var(--space-5);
+  z-index: 1080;             /* navbar is 1030, mobile menu 1050 */
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+
+  /* The container spans a region but must not swallow clicks on the page
+     behind it. Each toast re-enables pointer events for itself. */
+  pointer-events: none;
+}
+
+/* ---------- One toast ---------- */
+
+.app-toast {
+  pointer-events: auto;
+  position: relative;
+  overflow: hidden;
+
+  min-width: 300px;
+  max-width: 380px;
+
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+
+  padding: var(--space-4);
+
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--toast-accent, var(--color-primary));
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+
+  animation: app-toast-in 260ms cubic-bezier(0.21, 1.02, 0.73, 1);
+}
+
+.app-toast.is-leaving {
+  animation: app-toast-out 200ms ease-in forwards;
+}
+
+@keyframes app-toast-in {
+  from { opacity: 0; transform: translateX(110%); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes app-toast-out {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(110%); }
+}
+
+/* ---------- Icon ---------- */
+
+.app-toast-icon {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 17px;
+  background: var(--toast-accent-soft, var(--color-primary-soft));
+  color: var(--toast-accent, var(--color-primary));
+}
+
+/* ---------- Text ---------- */
+
+.app-toast-body {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-top: 2px;
+}
+
+.app-toast-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-heading);
+  margin: 0 0 2px;
+}
+
+.app-toast-message {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-body);
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+/* When there's no title the message carries the weight */
+.app-toast-body:not(:has(.app-toast-title)) .app-toast-message {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+/* ---------- Close button ---------- */
+
+.app-toast-close {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  margin: -2px -4px 0 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease;
+}
+
+.app-toast-close:hover {
+  background: var(--color-surface-muted);
+  color: var(--color-text-primary);
+}
+
+/* ---------- Progress bar ---------- */
+
+.app-toast-progress {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 100%;
+  transform-origin: left center;
+  background: var(--toast-accent, var(--color-primary));
+  opacity: .35;
+  animation: app-toast-progress var(--toast-duration, 3000ms) linear forwards;
+}
+
+@keyframes app-toast-progress {
+  from { transform: scaleX(1); }
+  to   { transform: scaleX(0); }
+}
+
+/* ---------- Variants ---------- */
+
+.app-toast-success {
+  --toast-accent: var(--color-success);
+  --toast-accent-soft: var(--color-success-soft);
+}
+
+.app-toast-error {
+  --toast-accent: var(--color-danger);
+  --toast-accent-soft: var(--color-danger-soft);
+}
+
+.app-toast-info {
+  --toast-accent: var(--color-primary);
+  --toast-accent-soft: var(--color-primary-soft);
+}
+
+.app-toast-warning {
+  --toast-accent: var(--color-warning);
+  --toast-accent-soft: var(--color-warning-soft);
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 576px) {
+  .app-toast-stack {
+    top: auto;
+    bottom: var(--space-4);
+    left: var(--space-4);
+    right: var(--space-4);
+  }
+
+  .app-toast {
+    min-width: 0;
+    max-width: none;
+  }
+
+  @keyframes app-toast-in {
+    from { opacity: 0; transform: translateY(120%); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes app-toast-out {
+    from { opacity: 1; transform: translateY(0); }
+    to   { opacity: 0; transform: translateY(120%); }
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .app-toast,
+  .app-toast.is-leaving,
+  .app-toast-progress {
+    animation: none;
+  }
+}

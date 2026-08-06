@@ -1,0 +1,154 @@
+.verify-page {
+    min-height: calc(100vh - 160px);
+    padding: 3rem 0 4rem;
+}
+
+.verify-shell {
+    max-width: 600px;
+}
+
+.verify-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: var(--legacy-shadow-md);
+}
+
+.verify-kicker {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--brand-light);
+}
+
+.page-heading {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(1.9rem, 3vw, 2.45rem);
+    font-weight: 800;
+    color: var(--text-dark);
+    letter-spacing: -0.02em;
+}
+
+.page-subtext {
+    color: var(--text-muted);
+    font-size: 0.98rem;
+}
+
+/* OTP Input Styles */
+.otp-container {
+    display: flex;
+    gap: 0.8rem;
+    justify-content: center;
+    margin: 2rem 0;
+}
+
+.otp-input {
+    width: 50px;
+    height: 50px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    background: #fbfbfb;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.otp-input:focus {
+    outline: none;
+    border-color: var(--brand-light);
+    box-shadow: 0 0 0 0.18rem rgba(26, 110, 168, 0.12);
+    background: #fff;
+}
+
+.otp-input::placeholder {
+    color: #d1d5db;
+    font-weight: 400;
+}
+
+/* Error Message */
+.otp-error {
+    color: #dc3545;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.75rem 1rem;
+    background: rgba(220, 53, 69, 0.1);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+/* Verify Button */
+.verify-btn {
+    min-height: 52px;
+    border: none;
+    border-radius: 12px;
+    background: var(--text-dark);
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.verify-btn:hover,
+.verify-btn:focus {
+    background: #1f2937;
+    color: #fff;
+}
+
+/* Resend Code Text */
+.resend-text {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.resend-link {
+    color: var(--brand);
+    font-weight: 700;
+    text-decoration: none;
+    margin-left: 0.3rem;
+    transition: text-decoration 0.2s ease;
+}
+
+.resend-link:hover {
+    text-decoration: underline;
+}
+
+/* Back Link */
+.back-text {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.back-link {
+    color: var(--brand);
+    font-weight: 700;
+    text-decoration: none;
+    transition: text-decoration 0.2s ease;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 767.98px) {
+    .verify-page {
+        padding: 2rem 0 3rem;
+    }
+
+    .verify-card {
+        border-radius: 16px;
+    }
+
+    .otp-container {
+        gap: 0.6rem;
+    }
+
+    .otp-input {
+        width: 45px;
+        height: 45px;
+        font-size: 1.25rem;
+    }
+}

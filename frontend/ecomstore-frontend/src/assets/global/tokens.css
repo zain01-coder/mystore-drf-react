@@ -1,0 +1,15 @@
+/* ============================================================
+   tokens.css — canonical design token system
+   Loaded globally in main.jsx, before style.css and any
+   component/page stylesheet. Single source of truth for
+   Navbar, Footer, Home, and the shared ProductCard.
+
+   Legacy pages (Cart, Checkout, Login, Signup, Store,
+   Payment, VerifyEmail) still reference the older token set
+   defined in style.css (--brand, --accent, --page-bg, etc.)
+   until they get their own redesign pass — the two systems
+   intentionally coexist for now.
+   ============================================================ */
+:root {
+  /* Brand */
+  }

@@ -1,0 +1,167 @@
+/* ═══════════════════════ FOOTER (premium, token-driven) ═══════════════════════ */
+.site-footer {
+    background: var(--color-footer);
+    color: rgba(255, 255, 255, .72);
+    font-family: var(--font-family-base);
+}
+
+.footer-brand {
+    font-family: var(--font-family-base);
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -.02em;
+    margin-bottom: var(--space-2);
+}
+
+.footer-tagline {
+    font-size: var(--font-size-sm);
+    color: rgba(255, 255, 255, .45);
+    margin-bottom: var(--space-6);
+    max-width: 320px;
+}
+
+.footer-social {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.social-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .06);
+    border: 1px solid rgba(255, 255, 255, .1);
+    color: rgba(255, 255, 255, .65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    text-decoration: none;
+    transition: background 200ms var(--ease-standard), color 200ms var(--ease-standard), border-color 200ms var(--ease-standard), transform 200ms var(--ease-standard);
+}
+
+.social-btn:hover {
+    background: var(--color-primary);
+    color: #fff;
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+}
+
+.footer-heading {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, .9);
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    margin-bottom: var(--space-4);
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: var(--space-2);
+}
+
+.footer-links a {
+    color: rgba(255, 255, 255, .5);
+    text-decoration: none;
+    font-size: var(--font-size-sm);
+    transition: color 200ms var(--ease-standard), padding-left 200ms var(--ease-standard);
+}
+
+.footer-links a:hover {
+    color: #fff;
+    padding-left: 3px;
+}
+
+.footer-divider {
+    border-color: rgba(255, 255, 255, .08);
+    margin: 0;
+}
+
+.footer-bottom {
+    font-size: var(--font-size-sm);
+    color: rgba(255, 255, 255, .35);
+}
+
+.footer-container {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+
+.footer-accent-icon {
+  color: var(--color-primary);
+}
+
+.footer-brand-dot {
+  color: var(--color-primary);
+}
+
+.footer-ssl {
+  font-size: var(--font-size-sm);
+  color: rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+}
+
+.ssl-icon {
+  color: #34d399;
+}
+
+.payment-badge {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 6px 11px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+  letter-spacing: .01em;
+  transition: border-color 200ms var(--ease-standard), color 200ms var(--ease-standard);
+}
+
+.payment-badge:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
+.app-store-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: 9px 12px;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 13px;
+  transition: background 200ms var(--ease-standard), border-color 200ms var(--ease-standard);
+}
+
+.app-store-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, .22);
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.app-store-btn i {
+  font-size: 17px;
+}
+
+.footer-bottom-link {
+  color: rgba(255, 255, 255, 0.4);
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+  transition: color 200ms var(--ease-standard);
+}
+
+.footer-bottom-link:hover {
+  color: rgba(255, 255, 255, 0.85);
+}
