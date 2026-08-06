@@ -13,6 +13,7 @@ backend, React on the frontend, Stripe for payments.
 - Django + Django REST Framework
 - SimpleJWT for authentication (with token blacklisting)
 - django-cors-headers, django-filter
+- django-environ for settings/secrets
 - Stripe Python SDK
 - SQLite (development)
 
@@ -22,22 +23,30 @@ backend, React on the frontend, Stripe for payments.
 - Axios
 - Stripe.js / React Stripe.js
 - React Hook Form
+- react-hot-toast
 - Bootstrap 5 + Bootstrap Icons (loaded via CDN in `index.html`)
+- Custom CSS design tokens (`src/assets/global/tokens.css`)
 
 ---
 
 ## Features
 
-- Product catalogue with categories, variations (size/colour) and pagination
+- Product catalogue with categories, variations (size/colour), a multi-image gallery and pagination
+- Sale pricing — products can carry a `sale_price`, and the discount percentage is derived
 - Product search (navbar search box → backend `SearchFilter` over name, description and
-  category), plus price range, in-stock and ordering filters on the store page
-- Product reviews and ratings, with average rating shown on the product card and detail page
+  category), plus price range, in-stock, minimum-rating and ordering filters on the store page
+- Product reviews and ratings, with average rating shown on the product card and detail page;
+  reviewers can edit or delete their own review
 - Cart supporting both logged-in users and guests
-- Wishlist
+- Wishlist (add, remove, clear)
+- Address book — multiple saved addresses per user, with a default address used at checkout
 - JWT authentication with OTP-based email verification, resend-OTP, and password reset
+- Account dashboard — profile summary, recent orders, wishlist highlights
 - Checkout with a Stripe payment flow
 - Order history with per-line price snapshots, status filter tabs and pagination
 - Order confirmation emails
+- Newsletter signup on the home page (sends a welcome email)
+- `seed_products` management command that fills the catalogue with demo products and images
 
 ---
 
@@ -46,25 +55,33 @@ backend, React on the frontend, Stripe for payments.
 ```
 E Commerce Store/
 ├── env/                        # Python virtualenv (not committed)
+├── .gitignore
 ├── backend/
 │   ├── manage.py
-│   ├── db.sqlite3
+│   ├── db.sqlite3              # not committed
+│   ├── .env                    # backend secrets (not committed)
 │   ├── requirements.txt
+│   ├── api.http                # scratch requests for manual API testing
 │   ├── ecomstore/              # settings, root urls
 │   ├── accounts/               # auth, registration, email verification
-│   ├── store/                  # products, variations
+│   ├── store/                  # products, images, variations, reviews
+│   │   └── management/commands/seed_products.py
 │   ├── category/
 │   ├── cart/
-│   ├── order/                  # orders, payments, Stripe webhook
-│   └── wishlist/
+│   ├── order/                  # orders, payments, Stripe webhook, services.py
+│   ├── wishlist/
+│   ├── address/                # saved shipping addresses
+│   └── newsletter/             # newsletter subscribe endpoint
 └── frontend/
     └── ecomstore-frontend/
         ├── .env                # frontend env vars (not committed)
         └── src/
             ├── pages/
             ├── components/
+            ├── context/        # CartContext, CategoryContext
             ├── router/
-            └── utils/
+            ├── assets/global/  # tokens.css, style.css
+            └── utils/          # api.js, auth.js, toast.jsx
 ```
 
 ---
@@ -91,9 +108,16 @@ source env/bin/activate
 pip install -r backend/requirements.txt
 
 cd backend
+# create backend/.env first — see Environment variables below
 python manage.py migrate
 python manage.py createsuperuser
+
+# optional: fill the catalogue with demo products (needs `requests` installed
+# and downloads placeholder images, so it needs internet access)
+python manage.py seed_products
 ```
+
+> `seed_products` **deletes all existing products** before inserting the demo set.
 
 ### Frontend
 
@@ -106,6 +130,22 @@ npm install
 
 ## Environment variables
 
+### Backend — `backend/.env`
+
+Loaded by `django-environ` in `ecomstore/settings.py`. The file is gitignored; create it yourself.
+
+| Variable | Description |
+|---|---|
+| `SECRET_KEY` | Django secret key |
+| `DEBUG` | `True` for local development |
+| `ALLOWED_HOSTS` | Comma-separated host list (may be empty while `DEBUG=True`) |
+| `STRIPE_SECRET_KEY` | Stripe secret key (`sk_test_...`) |
+| `STRIPE_PUBLISHABLE_KEY` | Stripe publishable key |
+| `STRIPE_WEBHOOK_SECRET` | Webhook signing secret (`whsec_...`) — printed by `stripe listen` |
+| `EMAIL_HOST_USER` | Gmail address used to send OTP / order / newsletter emails |
+| `EMAIL_HOST_PASSWORD` | Gmail **app password**, not your account password |
+| `FRONTEND_URL` | Base URL used in emailed links (defaults to `http://localhost:5173`) |
+
 ### Frontend — `frontend/ecomstore-frontend/.env`
 
 | Variable | Description |
@@ -114,22 +154,8 @@ npm install
 
 Vite only exposes variables prefixed with `VITE_` to the browser.
 
-### Backend — currently in `backend/ecomstore/settings.py`
-
-These are **hardcoded in settings.py right now** and should be moved to environment
-variables (`django-environ` is already installed):
-
-| Setting | Description |
-|---|---|
-| `SECRET_KEY` | Django secret key |
-| `STRIPE_SECRET_KEY` | Stripe secret key (`sk_test_...`) |
-| `STRIPE_PUBLISHABLE_KEY` | Stripe publishable key |
-| `STRIPE_WEBHOOK_SECRET` | Webhook signing secret (`whsec_...`) — printed by `stripe listen` |
-| `EMAIL_HOST_USER` | Gmail address used to send order emails |
-| `EMAIL_HOST_PASSWORD` | Gmail **app password**, not your account password |
-
-⚠️ **Do not commit real keys.** There is no `.gitignore` in this repo yet — see
-[Known gaps](#known-gaps).
+⚠️ **Do not commit real keys.** Both `.env` files are covered by `.gitignore`, along with `env/`,
+`db.sqlite3`, `__pycache__/`, `node_modules/` and `media/`.
 
 ---
 
@@ -160,8 +186,8 @@ npm run dev
 stripe listen --forward-to localhost:8000/order/stripe-webhook/
 ```
 
-Copy the `whsec_...` it prints into `STRIPE_WEBHOOK_SECRET` in `settings.py`. If it doesn't
-match, every webhook fails signature verification and returns 400.
+Copy the `whsec_...` it prints into `STRIPE_WEBHOOK_SECRET` in `backend/.env` and restart Django.
+If it doesn't match, every webhook fails signature verification and returns 400.
 
 ---
 
@@ -228,8 +254,9 @@ Worth understanding, because it's the subtle part of the app:
    a) Webhook       Stripe POSTs payment_intent.succeeded to the server
    b) Confirm view  The success page asks Stripe directly
 
-   Both call fulfil_order(), which claims the order with a single atomic
-   UPDATE. Whichever arrives first does the work; the other no-ops.
+   Both call fulfil_order() in order/services.py, which claims the order with
+   a single atomic UPDATE. Whichever arrives first does the work; the other
+   no-ops.
 
 5. fulfil_order()             Marks paid, records the Payment, decrements
                               stock, removes only the ordered lines from the
@@ -240,7 +267,8 @@ Worth understanding, because it's the subtle part of the app:
 Two design points worth knowing:
 
 - **The cart isn't cleared until payment succeeds**, and only the lines that were actually
-  ordered are removed. Anything added after placing the order survives.
+  ordered are removed — matched by product *and* variation set. Anything added after placing the
+  order survives.
 - **`OrderProduct.product_price` is a snapshot.** Changing a product's price later does not
   rewrite past orders.
 
@@ -253,12 +281,16 @@ Base URL: `http://localhost:8000/`
 | Prefix | Purpose |
 |---|---|
 | `admin/` | Django admin |
-| `accounts/` | Register, verify email (OTP), resend OTP, login, logout, token refresh, forgot/reset password |
-| `store/` | Product list (paginated, searchable, filterable), category listing, product detail, product reviews |
+| `accounts/` | Register, verify email (OTP), resend OTP, login, current user (`me/`), logout, token refresh, forgot/reset password |
+| `store/` | Product list (paginated, searchable, filterable), featured products, category listing, product detail, product reviews, review detail |
 | `category/` | Category list |
 | `cart/` | View cart, add, increase/decrease quantity, remove, clear |
-| `wishlist/` | List, add, remove |
+| `wishlist/` | List, add, remove, clear |
+| `address/` | Address CRUD (DRF router) + `POST address/<id>/set_default/` |
 | `order/` | Place order, payment intent, webhook, confirm, list, detail |
+| `newsletter/` | `POST newsletter/subscribe/` |
+
+`backend/api.http` holds ready-made requests for poking these by hand.
 
 ---
 
@@ -266,18 +298,17 @@ Base URL: `http://localhost:8000/`
 
 Things that are unfinished or need attention:
 
-- **No `.gitignore`, and this folder isn't a git repo yet.** `env/`, `db.sqlite3`, `.env`,
-  `__pycache__/` and `node_modules/` all need to be excluded **before** running `git init` and
-  pushing anywhere — `settings.py` currently has real-looking Stripe and Gmail credentials
-  hardcoded in it (see below).
-- **Secrets are hardcoded in `settings.py`** (`SECRET_KEY`, Stripe keys, Gmail app password) and
-  need to move to environment variables before this is pushed publicly.
-- **Currency mismatch.** The UI displays `Rs.` but Stripe charges are created in `usd`.
-- **Orders page** — status filter tabs and pagination work; the "Invoice", "View Details" and
-  "Buy Again" buttons on each order card are still static (no handlers wired up yet). There's no
-  sort dropdown on this page.
+- **Currency mismatch.** The UI displays `Rs.` but Stripe charges are created in `usd`
+  (`order/views.py`).
+- **Newsletter signups aren't stored.** `newsletter/models.py` is empty — subscribing only sends a
+  welcome email, so there's no subscriber list to mail later.
+- **`seed_products` imports `requests`, which isn't in `requirements.txt`.** Install it separately
+  (`pip install requests`) before running the command.
+- **Orders page** — status filter tabs and pagination work; there's no sort dropdown, no invoice
+  download, and no "buy again" action yet.
 - No automated tests — every app's `tests.py` is still a stub.
-- `DEBUG = True` and SQLite — development configuration only.
+- `DEBUG` and SQLite — development configuration only; no production settings, static file
+  serving or deployment setup.
 
 ---
 
@@ -288,5 +319,10 @@ Things that are unfinished or need attention:
 - React runs in StrictMode, so effects fire twice in development. The payment page guards against
   this with a `useRef`, and the backend uses a Stripe idempotency key — without both, two payment
   intents get created per order and the wrong one gets saved.
-- Order emails go through Gmail SMTP and need an **app password** (Google account → Security →
+- `Product.image` is always the primary image used in listings, cart and orders. The `ProductImage`
+  model holds only the *extra* gallery shots on the detail page, so there's no ambiguity about
+  which one is the main image.
+- Setting `Address.is_default = True` automatically clears the flag on the user's other addresses
+  (handled in `Address.save()`).
+- Emails go through Gmail SMTP and need an **app password** (Google account → Security →
   2-Step Verification → App passwords), not your normal password.
