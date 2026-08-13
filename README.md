@@ -3,7 +3,7 @@
 A full-stack e-commerce application built as a learning project — Django REST Framework on the
 backend, React on the frontend, Stripe for payments.
 
-> **Status:** in development. See [Known gaps](#known-gaps) for what isn't finished.
+> **Status:** in development.
 
 ---
 

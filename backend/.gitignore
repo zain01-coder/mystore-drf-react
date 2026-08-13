@@ -1,5 +1,7 @@
 .env
 db.sqlite3
+datadump.json
+db copy.sqlite3.backup
 media/
 __pycache__/
 *.pyc
