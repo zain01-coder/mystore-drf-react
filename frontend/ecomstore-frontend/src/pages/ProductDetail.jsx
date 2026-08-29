@@ -119,6 +119,11 @@ const ProductDetail = () => {
   }
 
   const handleAddToCart = async () => {
+    if (!isAuthenticated()) {
+      navigate('/login')
+      return
+    }
+
     const variationCategories = Object.keys(groupedVariations)
     const allVariationsSelected = variationCategories.every(
       category => selectedVariations[category]
@@ -151,6 +156,11 @@ const ProductDetail = () => {
 
 
   const toggleWishlist = async () => {
+    if (!isAuthenticated()) {
+      navigate('/login')
+      return
+    }
+
     if (wishlisted) {
       try {
 
@@ -159,7 +169,7 @@ const ProductDetail = () => {
         showToast("Removed from wishlist", 'success')
       }
       catch (err) {
-        const message = err.response?.data || 'Failed to remove from wishlist'
+        const message = err.response?.data?.detail || 'Failed to remove from wishlist'
         showToast(message, 'error')
 
       }
@@ -171,7 +181,7 @@ const ProductDetail = () => {
         showToast("Added from wishlist", 'success')
       }
       catch (err) {
-        const message = err.response?.data || 'Failed to add to wishlist'
+        const message = err.response?.data?.detail || 'Failed to add to wishlist'
         showToast(message, 'error')
 
       }

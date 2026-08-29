@@ -24,7 +24,7 @@ const ProductCard = ({ product, isWishlisted = false, onRemove }) => {
         if (onRemove) onRemove(product.id)
       }
       catch (err) {
-        const message = err.response?.data || 'Failed to remove from wishlist'
+        const message = err.response?.data?.detail || 'Failed to remove from wishlist'
         showToast(message, 'error')
 
       }
@@ -36,7 +36,7 @@ const ProductCard = ({ product, isWishlisted = false, onRemove }) => {
         showToast('Added to wishlist', 'success')
       }
       catch (err) {
-        const message = err.response?.data || 'Failed to add to wishlist'
+        const message = err.response?.data?.detail || 'Failed to add to wishlist'
         showToast(message, 'error')
 
       }

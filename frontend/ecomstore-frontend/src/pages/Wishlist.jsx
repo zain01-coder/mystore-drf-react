@@ -23,7 +23,7 @@ const Wishlist = () => {
         setItems(response.data)
       }
       catch (err) {
-        const message = err.response?.data || 'Failed to load the items'
+        const message = err.response?.data?.detail || 'Failed to load the items'
         setError(message)
       }
       finally {
@@ -46,7 +46,7 @@ const Wishlist = () => {
       showToast('Wishlist cleared', 'success')
     }
     catch (err) {
-      const message = err.response?.data || 'Failed to clear wishlist'
+      const message = err.response?.data?.detail || 'Failed to clear wishlist'
       showToast(message, 'error')
     }
   }
