@@ -1,0 +1,12 @@
+.env
+db.sqlite3
+db copy.sqlite3.backup
+datadump.json
+media/
+staticfiles/
+__pycache__/
+*.pyc
+.git/
+.gitignore
+Dockerfile
+.dockerignore

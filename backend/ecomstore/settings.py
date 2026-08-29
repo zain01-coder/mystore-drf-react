@@ -31,6 +31,13 @@ DEBUG = env.bool('DEBUG', default=False)
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
 
+CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=[])
+
+# Render (and similar PaaS) terminate TLS at a proxy in front of the app, so
+# Django must be told to trust the X-Forwarded-Proto header, otherwise it
+# treats every request as plain HTTP and CSRF/secure-cookie checks fail.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY')
 STRIPE_PUBLISHABLE_KEY = env('STRIPE_PUBLISHABLE_KEY')
 STRIPE_WEBHOOK_SECRET = env('STRIPE_WEBHOOK_SECRET')
@@ -64,6 +71,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -145,8 +153,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
-
-
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    },
+}
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -192,8 +207,8 @@ FRONTEND_URL = env('FRONTEND_URL', default='http://localhost:5173')
 
 #cors settings
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [
+CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[
     "http://localhost:5173",
     "http://127.0.0.1:3000",
-]
+])
 
