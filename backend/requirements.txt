@@ -12,3 +12,4 @@ whitenoise
 Pillow
 django-cloudinary-storage
 cloudinary
+django-anymail

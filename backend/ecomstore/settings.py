@@ -62,6 +62,9 @@ INSTALLED_APPS = [
     'cloudinary_storage',
     'cloudinary',
 
+    #email
+    'anymail',
+
     #my apps
     'accounts',
     'cart',
@@ -204,13 +207,11 @@ SPECTACULAR_SETTINGS = {
 
 
 #email settings
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
-EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_BACKEND = 'anymail.backends.brevo.EmailBackend'
+ANYMAIL = {
+    'BREVO_API_KEY': env('BREVO_API_KEY', default=''),
+}
+DEFAULT_FROM_EMAIL = env('EMAIL_HOST_USER')
 FRONTEND_URL = env('FRONTEND_URL', default='http://localhost:5173')
 
 

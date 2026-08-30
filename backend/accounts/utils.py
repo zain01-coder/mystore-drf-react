@@ -1,3 +1,4 @@
+import logging
 import random
 from django.core.mail import EmailMessage
 from .models import OTP
@@ -5,6 +6,8 @@ from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
+
+logger = logging.getLogger(__name__)
 
 
 def generate_otp():
@@ -48,7 +51,10 @@ def send_otp(user):
         to=[user.email]
     )
     email.content_subtype = 'html'  # this line makes it render as HTML
-    email.send()
+    try:
+        email.send()
+    except Exception:
+        logger.exception('Failed to send verification email to %s', user.email)
 
 
 def send_password_reset_email(user):
@@ -90,4 +96,7 @@ def send_password_reset_email(user):
         to=[user.email]
     )
     email.content_subtype = 'html'
-    email.send()
+    try:
+        email.send()
+    except Exception:
+        logger.exception('Failed to send password reset email to %s', user.email)

@@ -1,6 +1,9 @@
+import logging
 import uuid
 from django.core.mail import EmailMessage
 from django.conf import settings
+
+logger = logging.getLogger(__name__)
 
 
 def generate_order_number():
@@ -86,7 +89,10 @@ def order_confirmed_email(order):
         to=[order.email]
     )
     email.content_subtype = 'html'
-    email.send()
+    try:
+        email.send()
+    except Exception:
+        logger.exception('Failed to send order confirmation email for order %s', order.order_number)
 
 
 
